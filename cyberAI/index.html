@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Domain WHOIS Lookup</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <linl rel="stylesheet" href="style.css"/>
+   <style>
+      
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Domain WHOIS Lookup</h1>
+        <form id="domainForm" action="{{ url_for('lookup') }}" method="POST">
+            <div class="form-group">
+                <label for="domainName" class="form-label">Enter a Domain name:</label>
+                <input type="text" class="form-control" id="domainName" name="domain" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Lookup</button>
+        </form>
+        <div id="resultBox"></div>
+        
+        <form id="downloadForm" action="{{ url_for('download_excel') }}" method="POST">
+            <input type="hidden" id="downloadDomain" name="domain" value="">
+            <button type="submit" class="btn btn-success btn-block mt-3">Download Excel</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#domainForm").submit(function(event) {
+                event.preventDefault();
+                var domain = $("#domainName").val();
+                $.ajax({
+                    url: "/lookup",
+                    method: "POST",
+                    data: { domain: domain },
+                    success: function(response) {
+                        $("#resultBox").html(response);
+                    }
+                });
+            });
+            
+            $("#downloadForm").submit(function(event) {
+                event.preventDefault();
+                var domain = $("#domainName").val();
+                $("#downloadDomain").val(domain);  
+                $("#downloadForm").submit(); 
+            });
+        });
+    </script>
+</body>
+</html>
